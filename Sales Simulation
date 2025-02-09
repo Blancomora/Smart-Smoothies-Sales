@@ -1,0 +1,123 @@
+´´´´
+my_fruit= 'banana'
+sandys_fruit,allans_fruit,ales_fruit='apple','melon','orange'
+
+
+## Also you could type:
+fruits= ['apple','melon','orange']
+sandys_fruit,allans_fruit,ales_fruit=fruits
+
+sandys_fruit.capitalize()
+
+smoothie_order="I woud like a "+my_fruit+" smoothie \nSandy wants it of "+sandys_fruit
+
+
+for line in smoothie_order.splitlines(keepends=True):
+  print(line)
+´´´´
+
+For the logo of our company the following imput was gave to copilot
+
+"Imagine a vibrant, tropical-themed logo featuring elements such as: A refreshing smoothie cup with a straw. Exotic fruits like mangoes, pineapples, and coconuts. A background with lush greenery and maybe even a glimpse of a beautiful Costa Rican beach or volcano."
+
+The image was saved and uploaded in the following chunk to add it to our project description
+
+´´´´
+# Display company logo
+
+from IPython.display import Image, display
+logo_path = 'company logo.png'
+
+
+# Project description
+project_description = """
+<style>
+    .project-title {
+        font-family: 'Times New Roman', Times, serif;
+        font-size: 16pt;
+        font-weight: bold;
+    }
+    .project-content {
+        font-family: 'Times New Roman', Times, serif;
+        font-size: 12pt;
+    }
+</style>
+
+<div class="project-title">
+    Smart Smoothies Sales Simulation Project
+</div>
+
+<div class="project-content">
+    <p><strong>Project Overview</strong></p>
+    <p>This project aims to create a Python script that simulates the sales of a smoothie company with 15 stores across Costa Rica. These stores are strategically located in the most frequently visited tourist spots, including:</p>
+    <ul>
+        <li>Arenal Volcano</li>
+        <li>Puerto Viejo</li>
+        <li>Manuel Antonio</li>
+        <li>Corcovado</li>
+        <li>Tamarindo</li>
+        <li>Conchal</li>
+        <li>Bahia Ballena</li>
+        <li>Chirripo</li>
+        <li>Other national parks</li>
+    </ul>
+
+    <p>The goal is to generate four data tables using the <code>numpy</code> library:</p>
+    <ol>
+        <li><strong>Locations Dimension Table</strong>: Contains information about the store locations.</li>
+        <li><strong>Dates Dimension Table</strong>: Contains dates from 2019 to 2024 at a granular level (day and hour).</li>
+        <li><strong>Customers Dimension Table</strong>: Contains customer information, including whether a customer has a subscription. Subscription information is available only for locals since they are more likely to purchase smoothies repeatedly over the weeks.</li>
+        <li><strong>Transactions Fact Table</strong>: Contains all sales transactions and has foreign keys related to the location, date, and customer dimension tables.</li>
+    </ol>
+</div>
+"""
+
+# Display the project description in a grid view
+
+display(HTML(project_description))
+display(Image(filename=logo_path))
+
+´´´´
+import numpy as np
+import pandas as pd
+from datetime import datetime, timedelta
+
+# Locations
+locations = ['Arenal Volcano', 'Puerto Viejo', 'Manuel Antonio', 'Corcovado', 
+             'Tamarindo', 'Conchal', 'Bahia Ballena', 'Chirripo'] + [f'National Park {i}' for i in range(8)]
+location_ids = np.arange(1, len(locations) +1 ) # Change here: make sure location_ids has the same length as locations
+location_data = {'location_id': location_ids, 'location_name': locations}
+
+# Dates
+start_date = datetime(2019, 1, 1)
+end_date = datetime(2024, 12, 31)
+date_range = pd.date_range(start=start_date, end=end_date, freq='H')
+date_ids = np.arange(1, len(date_range) + 1)
+date_data = {'date_id': date_ids, 'datetime': date_range}
+
+# Customers
+customer_ids = np.arange(1, 1001)
+local_flags = np.random.choice([True, False], size=1000, p=[0.3, 0.7])
+subscription_flags = [flag and np.random.rand() < 0.5 for flag in local_flags]
+customer_data = {'customer_id': customer_ids, 'is_local': local_flags, 'has_subscription': subscription_flags}
+
+# Transactions
+np.random.seed(42)
+transaction_ids = np.arange(1, 10001)
+transaction_dates = np.random.choice(date_ids, size=10000)
+transaction_locations = np.random.choice(location_ids, size=10000)
+transaction_customers = np.random.choice(customer_ids, size=10000)
+transaction_amounts = np.round(np.random.uniform(3, 10, size=10000), 2)
+transaction_data = {
+    'transaction_id': transaction_ids,
+    'date_id': transaction_dates,
+    'location_id': transaction_locations,
+    'customer_id': transaction_customers,
+    'amount': transaction_amounts
+}
+
+# Convert to DataFrames
+location_df = pd.DataFrame(location_data)
+date_df = pd.DataFrame(date_data)
+customer_df = pd.DataFrame(customer_data)
+transaction_df = pd.DataFrame(transaction_data)
